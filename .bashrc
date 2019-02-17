@@ -47,12 +47,12 @@ setup_local() {
 }
 
 setup_completions() {
-    local _=$(which rustup 2> /dev/null)
+    which rustup &> /dev/null
     if [ $? -eq 0 ]; then
         . <(rustup completions bash)
     fi
 
-    local _=$(which kubectl 2> /dev/null)
+    which kubectl &> /dev/null
     if [ $? -eq 0 ]; then
         . <(kubectl completion bash)
     fi
