@@ -68,6 +68,21 @@ setup_keychain() {
     fi
 }
 
+setup_colors() {
+    if [ -x /usr/bin/dircolors ]; then
+        if [ -f "${HOME}/.dir_colors" ]; then
+            eval $(dircolors -b "${HOME}/.dir_colors")
+        else
+            eval $(dircolors -b)
+        fi
+
+        alias ls="ls --color=auto"
+        alias grep='grep --color=auto'
+        alias fgrep='fgrep --color=auto'
+        alias egrep='egrep --color=auto'
+    fi
+}
+
 # Add various directories to our path
 setup_ruby
 setup_rust
@@ -76,6 +91,7 @@ setup_local
 
 setup_completions
 setup_keychain
+setup_colors
 
 maybe_load "${HOME}/.bash_aliases"
 maybe_load "${HOME}/.bash_prompt"
