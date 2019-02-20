@@ -47,6 +47,8 @@ setup_local() {
 }
 
 setup_completions() {
+    maybe_load "/usr/share/bash-completion/bash_completion"
+
     which rustup &> /dev/null
     if [ $? -eq 0 ]; then
         . <(rustup completions bash)
