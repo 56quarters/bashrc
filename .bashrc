@@ -8,8 +8,8 @@ esac
 
 maybe_load() {
     local FILE="$1"
-    if [ -f "$1" ]; then
-        . "$1"
+    if [ -f "$FILE" ]; then
+        . "$FILE"
     fi
 }
 
