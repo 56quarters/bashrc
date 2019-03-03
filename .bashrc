@@ -9,15 +9,15 @@ esac
 maybe_load() {
     local FILE="$1"
     if [ -f "$FILE" ]; then
+        # shellcheck source=/dev/null
         . "$FILE"
     fi
 }
 
 setup_ruby() {
     if [ -d "${HOME}/.gem" ]; then
-        local RUBIES="$(ls -1 ${HOME}/.gem/ruby/)"
-        for RUBY_VER in $RUBIES; do
-            export PATH="${PATH}:${HOME}/.gem/ruby/${RUBY_VER}/bin"
+        for RUBY_VER in "${HOME}/.gem/ruby/"*; do
+            export PATH="${PATH}:${RUBY_VER}/bin"
         done
     fi
 }
@@ -49,23 +49,28 @@ setup_local() {
 setup_completions() {
     maybe_load "/usr/share/bash-completion/bash_completion"
 
-    which rustup &> /dev/null
-    if [ $? -eq 0 ]; then
+    if command -v rustup > /dev/null; then
+        # shellcheck source=/dev/null
         . <(rustup completions bash)
     fi
 
-    which kubectl &> /dev/null
-    if [ $? -eq 0 ]; then
+    if command -v kubectl > /dev/null; then
+        # shellcheck source=/dev/null
         . <(kubectl completion bash)
     fi
 }
 
 setup_keychain() {
-    local KEYCHAIN_SCRIPT="${HOME}/.keychain/$(hostname -s)-sh"
+    local OUR_HOST KEYCHAIN_SCRIPT SSH_KEYS;
+
+    OUR_HOST="$(hostname -s)"
+    KEYCHAIN_SCRIPT="${HOME}/.keychain/${OUR_HOST}-sh"
+
     if [ -f "$KEYCHAIN_SCRIPT" ]; then
+        # shellcheck source=/dev/null
         . "$KEYCHAIN_SCRIPT"
 
-        local SSH_KEYS="$(ls -1 ${HOME}/.ssh/id_* | grep -v .pub)"
+        SSH_KEYS=$(echo "${HOME}/.ssh/id_"* | grep -v .pub)
         keychain --quiet "$SSH_KEYS"
     fi
 }
@@ -73,9 +78,9 @@ setup_keychain() {
 setup_colors() {
     if [ -x /usr/bin/dircolors ]; then
         if [ -f "${HOME}/.dir_colors" ]; then
-            eval $(dircolors -b "${HOME}/.dir_colors")
+            eval "$(dircolors -b "${HOME}/.dir_colors")"
         else
-            eval $(dircolors -b)
+            eval "$(dircolors -b)"
         fi
 
         alias ls="ls --color=auto"
