@@ -66,11 +66,16 @@ setup_keychain() {
     OUR_HOST="$(hostname -s)"
     KEYCHAIN_SCRIPT="${HOME}/.keychain/${OUR_HOST}-sh"
 
-    if [ -f "$KEYCHAIN_SCRIPT" ]; then
-        # shellcheck source=/dev/null
-        . "$KEYCHAIN_SCRIPT"
+    if command -v keychain > /dev/null; then
+        # Using maybe load here because the script doesn't exist before
+        # keychain is run for the first time.
+        maybe_load "$KEYCHAIN_SCRIPT"
 
-        SSH_KEYS=$(echo "${HOME}/.ssh/id_"* | grep -v .pub)
+        # We need to filter out public keys and hence need one result
+        # per line and `ls -1` is the best way to do that, so make sc
+        # stop complaining about it.
+        # shellcheck disable=SC2010
+        SSH_KEYS=$(ls -1 "${HOME}/.ssh/id_"* | grep -v .pub)
         keychain --quiet "$SSH_KEYS"
     fi
 }
