@@ -95,16 +95,20 @@ setup_colors() {
     fi
 }
 
-# Add various directories to our path
-setup_ruby
-setup_rust
-setup_go
-setup_local
+_main() {
+    # Add various directories to our path
+    setup_ruby
+    setup_rust
+    setup_go
+    setup_local
 
-setup_completions
-setup_keychain
-setup_colors
+    setup_completions
+    setup_keychain
+    setup_colors
 
-maybe_load "${HOME}/.bash_aliases"
-maybe_load "${HOME}/.bash_prompt"
-maybe_load "${HOME}/.extra"
+    maybe_load "${HOME}/.bash_aliases"
+    maybe_load "${HOME}/.bash_prompt"
+    maybe_load "${HOME}/.extra"
+}
+
+_main "$@"
