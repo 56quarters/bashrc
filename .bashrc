@@ -36,6 +36,12 @@ setup_go() {
     fi
 }
 
+setup_pony() {
+    if [ -d "${HOME}/.local/share/ponyup/bin" ]; then
+        export PATH="${PATH}:${HOME}/.local/share/ponyup/bin"
+    fi
+}
+
 setup_local() {
     if [ -d "${HOME}/bin" ]; then
         export PATH="${PATH}:${HOME}/bin"
@@ -100,6 +106,7 @@ _main() {
     setup_ruby
     setup_rust
     setup_go
+    setup_pony
     setup_local
 
     setup_completions
