@@ -61,8 +61,13 @@ setup_completions() {
     fi
 
     if command -v kubectl > /dev/null; then
+        # Set KUBECONFIG to /dev/null since otherwise the completion command
+        # attempts to make network connections which results in it taking 1+
+        # seconds instead of a few milliseconds. The resulting completion
+        # code is nearly identical in both cases with only some superficial
+        # differences.
         # shellcheck source=/dev/null
-        . <(kubectl completion bash)
+        . <(KUBECONFIG=/dev/null kubectl completion bash)
     fi
 }
 
